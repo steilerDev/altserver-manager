@@ -1,0 +1,58 @@
+{
+    "env": {
+        "es2021": true,
+        "node": true
+    },
+    "extends": [
+        "xo-react"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "plugins": [
+        "@typescript-eslint",
+        "eslint-plugin-tsdoc",
+        "eslint-plugin-react",
+        "eslint-plugin-react-hooks"
+    ],
+    "rules": {
+        "react/prop-types": "off",
+        "quotes": ["error", "backtick"],
+        "quote-props": ["error", "as-needed"],
+        "indent": ["error", 4],
+        "eol-last": ["error", "never"],
+        "new-cap": ["error", { "newIsCapExceptions": [], "capIsNewExceptions": [] }],
+        "tsdoc/syntax": "warn",
+        "no-negated-condition": "off",
+        "no-unused-vars": "off",
+        "no-undef": "off",
+        "@typescript-eslint/no-unused-vars": ["warn",
+        { 
+            "argsIgnorePattern": "^_",
+            "varsIgnorePattern": "^_",
+            "caughtErrorsIgnorePattern": "^_"
+        }],
+        "guard-for-in":  "off",
+        "no-await-in-loop": "off",
+        "max-params": "off",
+        "no-return-assign": ["error", "except-parens"],
+        "no-unreachable": "warn",
+        "default-case-last": "off",
+        "no-debugger": "warn",
+        "no-promise-executor-return": "off",
+        "no-unsafe-finally": "off",
+        "tsdoc-undefined-tag": "off",
+        "no-fallthrough": "off",
+        "accessor-pairs": ["error", { "getWithoutSet": true, "enforceForClassMembers": false }]
+    },
+    "overrides": [
+        {
+            "files": ["*.test.ts"],
+            "rules": {
+                "max-nested-callbacks": "off"
+            }
+        }
+    ]
+}
