@@ -19,6 +19,8 @@ jobs:
     - name: setup/metadata
       id: npm-metadata
       uses: ./.github/actions/npm-metadata
+      with:
+        package: ./package.json
     - name: setup/buildx
       uses: docker/setup-buildx-action@v3
     - name: setup/dockerhub
