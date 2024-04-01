@@ -1,26 +1,10 @@
 FROM node:20-bookworm-slim
 
-# ARG TARGETARCH
-# dpkg --print-ARCHitecture -> armhf = armv7?!
-ARG BUILDPLATFORM
-ARG BUILDOS 
-ARG BUILDARCH
-ARG BUILDVARIANT
 ARG TARGETPLATFORM
-ARG TARGETOS
-ARG TARGETARCH
-ARG TARGETVARIANT
-
-RUN echo "BUILDPLATFORM: ${BUILDPLATFORM}"
-RUN echo "BUILDOS: ${BUILDOS}"
-RUN echo "BUILDARCH: ${BUILDARCH}"
-RUN echo "BUILDVARIANT: ${BUILDVARIANT}"
-RUN echo "TARGETPLATFORM: ${TARGETPLATFORM}"
-RUN echo "TARGETOS: ${TARGETOS}"
-RUN echo "TARGETARCH: ${TARGETARCH}"
-RUN echo "TARGETVARIANT: ${TARGETVARIANT}"
-
-RUN exit 1
+RUN if [[ "$TARGETPLATFORM" == "linux/arm/v"* ]]; \
+        then export ARCH="armv7"; \
+    elif [[ "$TARGETPLATFORM" == "linux/arm64" ]]; \
+        then export ARCH="aarch64"; fi
 
 #########################################
 # Intalling dependencies
