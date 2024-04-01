@@ -25,27 +25,16 @@ jobs:
       with:
         username: ${{ env.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PWD }}
-    - name: push/beta
+    - name: action/push
       uses: docker/build-push-action@v3
       with:
         context: .
         push: true
         platforms: linux/amd64,linux/arm,linux/arm64
-        image: ${{env.DOCKER_USERNAME}}/${{env.PKG_NAME}}
+        images: ${{env.DOCKER_USERNAME}}/${{env.PKG_NAME}}
         tags: |
-          beta
-          ${{ steps.npm-metadata.outputs.version }}-beta
-    - name: push/latest
-      if: github.ref == 'refs/heads/main'
-      uses: docker/build-push-action@v3
-      with:
-        context: .
-        push: true
-        platforms: linux/arm/v8,linux/arm64
-        image: ${{env.DOCKER_USERNAME}}/${{env.PKG_NAME}}
-        tags: |
-          latest
-          ${{ steps.npm-metadata.outputs.version }}
+          ${{ github.ref == 'refs/heads/main' && 'latest' || 'beta'}}
+          ${{ steps.npm-metadata.outputs.version }}${{ github.ref == 'refs/heads/main' && '' || '-beta'}}
     - name: push/readme
       uses: peter-evans/dockerhub-description@v3
       with:
