@@ -31,9 +31,10 @@ jobs:
         context: .
         push: true
         platforms: linux/amd64,linux/arm,linux/arm64
-        tags: 
-          - ${{env.DOCKER_USERNAME}}/${{env.PKG_NAME}}:beta
-          - ${{env.DOCKER_USERNAME}}/${{env.PKG_NAME}}:${{ steps.npm-metadata.outputs.version }}-beta
+        image: ${{env.DOCKER_USERNAME}}/${{env.PKG_NAME}}
+        tags: |
+          beta
+          ${{ steps.npm-metadata.outputs.version }}-beta
     - name: push/latest
       if: github.ref == 'refs/heads/main'
       uses: docker/build-push-action@v3
@@ -41,9 +42,10 @@ jobs:
         context: .
         push: true
         platforms: linux/arm/v8,linux/arm64
-        tags: 
-          - ${{env.DOCKER_USERNAME}}/${{env.PKG_NAME}}:latest
-          - ${{env.DOCKER_USERNAME}}/${{env.PKG_NAME}}:${{ steps.npm-metadata.outputs.version }}
+        image: ${{env.DOCKER_USERNAME}}/${{env.PKG_NAME}}
+        tags: |
+          latest
+          ${{ steps.npm-metadata.outputs.version }}
     - name: push/readme
       uses: peter-evans/dockerhub-description@v3
       with:

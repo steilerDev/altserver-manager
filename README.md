@@ -39,4 +39,3 @@ docker run --rm -it -v $(pwd)/data/adi:/data/adi -v $(pwd)/data/lockdown:/var/li
 # Resources
 
 - [Setup Altserver Linux on Raspberry Pi with Wifi Refresh](https://gist.github.com/jschiefner/95a22d7f4803e7ad32a95b0f3aa655dc)
-# Prerequisit
