@@ -36,7 +36,7 @@ jobs:
         platforms: linux/arm/v8,linux/arm64
         tags: |
           ${{env.DOCKER_USERNAME}}/${{env.PKG_NAME}}:${{ github.ref == 'refs/heads/main' && 'latest' || 'beta'}}
-          ${{env.DOCKER_USERNAME}}/${{env.PKG_NAME}}:${{ steps.npm-metadata.outputs.version }}${{ github.ref == 'refs/heads/main' && '' || '-beta'}}
+          ${{env.DOCKER_USERNAME}}/${{env.PKG_NAME}}:${{ steps.npm-metadata.outputs.version }}${{ github.ref != 'refs/heads/main' && '-beta'}}
     - name: push/readme
       uses: peter-evans/dockerhub-description@v4
       with:
