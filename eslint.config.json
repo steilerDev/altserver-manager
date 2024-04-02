@@ -22,6 +22,8 @@
         "quotes": ["error", "backtick"],
         "quote-props": ["error", "as-needed"],
         "indent": ["error", 4],
+        "react/jsx-indent": ["error", 4],
+        "react/jsx-indent-props": ["error", 4],
         "eol-last": ["error", "never"],
         "new-cap": ["error", { "newIsCapExceptions": [], "capIsNewExceptions": [] }],
         "tsdoc/syntax": "warn",
@@ -46,13 +48,5 @@
         "tsdoc-undefined-tag": "off",
         "no-fallthrough": "off",
         "accessor-pairs": ["error", { "getWithoutSet": true, "enforceForClassMembers": false }]
-    },
-    "overrides": [
-        {
-            "files": ["*.test.ts"],
-            "rules": {
-                "max-nested-callbacks": "off"
-            }
-        }
-    ]
+    }
 }

@@ -36,7 +36,7 @@ export const Shell = {
         async exec(dir: string, ...args: string[]) {
             return exec(`${ALTSERVER_BIN} ${args.join(` `)}`,
                 {
-                    env: {ALTSERVER_ANISETTE_SERVER: 'bla'},
+                    env: {ALTSERVER_ANISETTE_SERVER: `bla`},
                     cwd: dir,
                 })
                 .then(({stdout}) => stdout);

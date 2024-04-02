@@ -2,7 +2,7 @@ import {SpawnOptionsWithoutStdio} from 'node:child_process';
 import { Logger} from '../log.js';
 import { Service, ServiceStatus } from '../services.js';
 
-export type USBMUXDDevice = {
+type USBMUXDDevice = {
     id?: string,
     address?: string,
     serial?: string
@@ -17,7 +17,7 @@ export class USBMUXD extends Service {
     args = [`-f`];
     opts: SpawnOptionsWithoutStdio = {};
 
-    label = 'usbmuxd'
+    label = `usbmuxd`
 
     devices: USBMUXDDevice [] = [];
     clearDevices(): void {

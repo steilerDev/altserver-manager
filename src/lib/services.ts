@@ -93,7 +93,7 @@ export abstract class Service extends Logging {
             return
         }
 
-        this.appendLog(LogLevel.INFO, "AltServer manager sending SIGKILL...")
+        this.appendLog(LogLevel.INFO, `AltServer manager sending SIGKILL...`)
         Logger.debug(`Sending SIGKILL to ${this.bin}...`);
         this.childProcess.kill()
 

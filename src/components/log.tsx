@@ -12,12 +12,12 @@ let offset: number = 0;
 let service: keyof AltServerServices | undefined;
 
 export default function Log(altStoreServices: AltServerServices) {
-	const [logLines, setLogLines] = useState<React.JSX.Element[]>([]);
+    const [logLines, setLogLines] = useState<React.JSX.Element[]>([]);
     const [logLevelVisible, setLogLevelVisible] = useState<boolean>(false);
-    const [currentLogSource, setCurrentLogSource] = useState<string>('');
+    const [currentLogSource, setCurrentLogSource] = useState<string>(``);
     const {isFocused} = useFocus({id: FOCUS_ID.LOG});
 
-	useInput((input, key) => {
+    useInput((input, key) => {
         if(isFocused) {
             if(key.upArrow) {
                 refreshLogLines({_offset: offset++})
@@ -27,15 +27,15 @@ export default function Log(altStoreServices: AltServerServices) {
                 refreshLogLines({_offset: offset++})
                 return
             }
-            if(key.ctrl && input === 'l') {
+            if(key.ctrl && input === `l`) {
                 setLogLevelVisible(true)
             }
         }
-	});
+    });
 
     useEffect(() => {
         refreshLogLines({
-            _service: "appLogger",
+            _service: `appLogger`,
             _logLevel: LogLevel.DEBUG,
             _offset: 0
         })
@@ -81,9 +81,11 @@ export default function Log(altStoreServices: AltServerServices) {
                 .toReversed() // reverse the log lines to show the latest logs on the bottom
                 .map((line, lineIndex) => {
                     const createLogLine = (msg: string, logLineIndex: string) => {
-                        return <Text key={logLineIndex} wrap='truncate' color={logLevelToColor(line.logLevel)}>
-                            {msg}
-                        </Text>
+                        return (
+                            <Text key={logLineIndex} wrap='truncate' color={logLevelToColor(line.logLevel)}>
+                                {msg}
+                            </Text>
+                        )
                     }
 
                     // Split multiline log messages
@@ -96,62 +98,65 @@ export default function Log(altStoreServices: AltServerServices) {
         )
     })
 
-	return (
-		<Box height={15} flexDirection="column" borderStyle={BorderStyle} borderColor={isFocused ? FocusColor : PrimaryColor}>
-            <Text bold={true} underline={true}>Log - {currentLogSource}<Newline/></Text>
+    return (
+        <Box height={15} flexDirection="column" borderStyle={BorderStyle} borderColor={isFocused ? FocusColor : PrimaryColor}>
+            <Text bold underline>Log - {currentLogSource}<Newline/></Text>
             <Box flexDirection='row'>
                 {
                     logLevelVisible && 
-                    <Box borderStyle={BorderStyle} 
+                    <Box
+                        borderStyle={BorderStyle} 
                         borderBottom={false} 
                         borderTop={false}
                         borderLeft={false}
                         flexDirection="column" 
                         flexGrow={1} 
-                        width={9}>
+                        width={9}
+                    >
                         <Text>Set log level:</Text><Newline/>
                         <Select
                             isDisabled={!logLevelVisible || !isFocused}
-                            onChange={_newValue => {
-                                refreshLogLines({_logLevel: textToLogLevel(_newValue as 'error' | 'warn' | 'info' | 'debug')})
-                            }}
-                            defaultValue={"debug"}
+                            defaultValue="debug"
                             options={
-                                [{
-                                    label: "Debug",
-                                    value: "debug"
-                                },{
-                                    label: "Info",
-                                    value: "info"
-                                },{
-                                    label: "Warn",
-                                    value: "warn"
-                                },{
-                                    label: "Error",
-                                    value: "error",
-                                }]
-                            }
-                        />
+	            [{
+	                label: `Debug`,
+	                value: `debug`
+	            },{
+	                label: `Info`,
+	                value: `info`
+	            },{
+	                label: `Warn`,
+	                value: `warn`
+	            },{
+	                label: `Error`,
+	                value: `error`,
+	            }]
+	        }
+                            onChange={_newValue => {
+	            refreshLogLines({_logLevel: textToLogLevel(_newValue as `error` | `warn` | `info` | `debug`)})
+	        }}
+	    />
                         <Spacer/>
                     </Box>
                 }
                 <Box flexDirection="column" flexGrow={8}>
                     {
                         isFocused &&
-                            <Box alignItems='center' height={1}>
-                                <Tabs 
-                                    colors={TabColors}
-                                    showIndex={false}
-                                    keyMap={{useTab: true}}
-                                    isFocused={isFocused}
-                                    onChange={newService => {
-                                        refreshLogLines({_service: newService as keyof AltServerServices})
-                                    }}
-                                    defaultValue='appLogger'>
-                                        <Tab name="appLogger">AltServer Manager</Tab>
-                                        <Tab name="usbmuxd">USBMUXD</Tab>
-                                </Tabs>
-                            </Box>
+                        <Box alignItems='center' height={1}>
+                            <Tabs 
+                                colors={TabColors}
+                                showIndex={false}
+                                keyMap={{useTab: true}}
+                                isFocused={isFocused}
+                                defaultValue='appLogger'
+                                onChange={newService => {
+	            refreshLogLines({_service: newService as keyof AltServerServices})
+	        }}
+                            >
+                                <Tab name="appLogger">AltServer Manager</Tab>
+                                <Tab name="usbmuxd">USBMUXD</Tab>
+                            </Tabs>
+                        </Box>
                     }
                     <Spacer/>
                     <Box minHeight={10} flexDirection="column">
@@ -159,6 +164,6 @@ export default function Log(altStoreServices: AltServerServices) {
                     </Box>
                 </Box>
             </Box>
-		</Box>
-	);
+        </Box>
+    );
 }

@@ -38,15 +38,15 @@ const services: AltServerServices = {
 }
 
 const shutdown = async () => {
-    console.log("Shutting down AltServer-Manager...")
+    console.log(`Shutting down AltServer-Manager...`)
     await services.usbmuxd.stop()
-    console.log("All services shutdown - goodbye!")
+    console.log(`All services shutdown - goodbye!`)
     process.exit(1)
 }
 
-process.on('SIGTERM', shutdown)
-process.on('SIGINT', shutdown)
+process.on(`SIGTERM`, shutdown)
+process.on(`SIGINT`, shutdown)
 
-render(<StrictMode><App services={services} /></StrictMode>);
+render(<StrictMode><App services={services}/></StrictMode>);
 
 await services.usbmuxd.start()

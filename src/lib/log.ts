@@ -9,7 +9,7 @@ export enum LogLevel {
     DEBUG = 4
 }
 
-export type LogLine = {
+type LogLine = {
     logLevel: LogLevel,
     timestamp: Date,
     message: string[]
@@ -42,7 +42,7 @@ export abstract class Logging extends EventEmitter {
 
 export class AppLogger extends Logging {
 
-    label = 'AltServer Manager'
+    label = `AltServer Manager`
 
     formatError(err?: Error) {
         return err 

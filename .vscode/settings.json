@@ -4,6 +4,7 @@
         "knip",
         "lockdown",
         "steilerdev",
+        "tsdoc",
         "usbmuxd"
     ]
 }

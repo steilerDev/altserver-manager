@@ -18,7 +18,7 @@ export default function ServiceControl(altStoreServices: AltServerServices) {
     const getServiceTab = (id: keyof AltServerServices, displayName: string, service?: Service) => {
         return <Tab name={id}><Text>{displayName} ({serviceStatusToText(service?.status)})</Text></Tab>
     }
-    const getUsbmuxdTabContent = getServiceTab.bind({}, "usbmuxd", "USBMUXD", altStoreServices.usbmuxd)
+    const getUsbmuxdTabContent = getServiceTab.bind({}, `usbmuxd`, `USBMUXD`, altStoreServices.usbmuxd)
     const [usbmuxdTab, setUsbmuxdTab] = useState<React.JSX.Element>(getUsbmuxdTabContent())
 
     const [serviceComponent, setServiceComponent] = useState<React.JSX.Element>()
@@ -31,13 +31,13 @@ export default function ServiceControl(altStoreServices: AltServerServices) {
         lastSelectedService = (service as keyof AltServerServices)
         Logger.debug(`Updating service control to ${service}`)
         switch(service) {
-            case "usbmuxd":
-                setServiceComponent(<USBMUXDService service={altStoreServices[service]}></USBMUXDService>)
-                return;
+        case `usbmuxd`:
+            setServiceComponent(<USBMUXDService service={altStoreServices[service]}/>)
+            return;
         }
     }
 
-    const performAction = async (action: 'restart' | 'stop' | 'start') => {
+    const performAction = async (action: `restart` | `stop` | `start`) => {
         if(!lastSelectedService) {
             Logger.error(`Unable to perform action ${action}, no service selected`)
             return
@@ -47,7 +47,7 @@ export default function ServiceControl(altStoreServices: AltServerServices) {
     }
 
     useEffect(() => {
-        updateSelectedService("usbmuxd")
+        updateSelectedService(`usbmuxd`)
         altStoreServices.usbmuxd.on(ServiceEvents.STATUS_CHANGED, () => {
             setUsbmuxdTab(getUsbmuxdTabContent())
         })
@@ -61,9 +61,9 @@ export default function ServiceControl(altStoreServices: AltServerServices) {
         actionShouldTrigger = false
     })
 
-	return (
-		<Box flexGrow={1} flexDirection="column" borderStyle={BorderStyle} borderColor={isFocused ? FocusColor : PrimaryColor}>
-            <Text bold={true} underline={true}>Services<Newline/></Text>
+    return (
+        <Box flexGrow={1} flexDirection="column" borderStyle={BorderStyle} borderColor={isFocused ? FocusColor : PrimaryColor}>
+            <Text bold underline>Services<Newline/></Text>
             <Tabs 
                 flexDirection='row'
                 keyMap={{useTab: true}}
@@ -73,49 +73,50 @@ export default function ServiceControl(altStoreServices: AltServerServices) {
                 defaultValue={lastSelectedService}
                 onChange={newService => {
                     updateSelectedService(newService as keyof AltServerServices)
-                }}>
+                }}
+            >
                 {usbmuxdTab}
                 <Tab name='test'>Test</Tab>
             </Tabs>
             <Box flexDirection='row'>
                 {
                     isFocused && 
-                        <Box flexGrow={1} borderStyle="single" borderColor='yellow'>
-                            <Select
-                                options={[
-                                    {
-                                        label: 'Start',
-                                        value: 'start',
-                                    },
-                                    {
-                                        label: 'Stop',
-                                        value: 'stop',
-                                        },
-                                    {
-                                        label: 'Restart',
-                                        value: 'restart',
-                                    },
-                                ]}
-                                onChange={async action => {
-                                    if(actionShouldTrigger) {
-                                        actionShouldTrigger = false
-                                        await performAction(action as 'start' | 'stop' | 'restart')
-                                    }
-                                }}
-                                isDisabled={!isFocused}
-                            />
-                        </Box>
+                    <Box flexGrow={1} borderStyle="single" borderColor='yellow'>
+                        <Select
+                            options={[
+	            {
+	                label: `Start`,
+	                value: `start`,
+	            },
+	            {
+	                label: `Stop`,
+	                value: `stop`,
+	            },
+	            {
+	                label: `Restart`,
+	                value: `restart`,
+	            },
+	        ]}
+                            isDisabled={!isFocused}
+                            onChange={async action => {
+	            if(actionShouldTrigger) {
+	                actionShouldTrigger = false
+	                await performAction(action as `start` | `stop` | `restart`)
+	            }
+	        }}
+	    />
+                    </Box>
                 }
                 {
                     isFocused &&
-                        <Box flexGrow={2} borderStyle={BorderStyle}>
-                            <Box flexDirection='column'>
-                                <Text underline={true}>Service details</Text>
-                                {serviceComponent}
-                            </Box>
+                    <Box flexGrow={2} borderStyle={BorderStyle}>
+                        <Box flexDirection='column'>
+                            <Text underline>Service details</Text>
+                            {serviceComponent}
                         </Box>
+                    </Box>
                 }
             </Box>
-		</Box>
-	);
+        </Box>
+    );
 }
