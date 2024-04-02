@@ -1,10 +1,13 @@
 FROM node:20-bookworm-slim
 
+# Extracting correct architecture for downloading pre-compiled binaries
 ARG TARGETPLATFORM
-RUN if [[ "$TARGETPLATFORM" == "linux/arm/v"* ]]; \
-        then export ARCH="armv7"; \
-    elif [[ "$TARGETPLATFORM" == "linux/arm64" ]]; \
-        then export ARCH="aarch64"; fi
+ENV ARCH_FILE="/docker-arch"
+RUN if [ -z ${TARGETPLATFORM##linux\/arm\/v*} ]; \
+        then echo "armv7" > ${ARCH_FILE}; \
+    elif [ -z ${TARGETPLATFORM##linux\/arm64} ]; \
+        then echo "aarch64" > ${ARCH_FILE}; \
+    else echo "Unsupported architecture ${TARGETPLATFORM}"; exit 1; fi
 
 #########################################
 # Intalling dependencies
@@ -43,17 +46,17 @@ RUN mkdir -p /opt/go-ios && \
 #RUN git clone https://github.com/Dadoum/anisette-v3-server.git /opt/ && \
 #    (cd anisette-v3-server && DC=ldc2 dub build -c "static" --build-mode allAtOnce -b release --compiler=ldc2) && \
 #    mv /opt/annisette-v3-server/anisette-v3-server /opt/anisette-server && chmod +x /opt/anisette-server && rm -r /opt/anisette-v3-server
-RUN wget -qO /opt/anisette-server "https://github.com/Dadoum/Provision/releases/download/${ANISETTE_SERVER_VERSION}/anisette-server-${ARCH}" && \
+RUN wget -qO /opt/anisette-server "https://github.com/Dadoum/Provision/releases/download/${ANISETTE_SERVER_VERSION}/anisette-server-$(cat ${ARCH_FILE})" && \
     chmod +x /opt/anisette-server
 
 # netmuxd install
 ##################
-RUN wget -qO /opt/netmuxd "https://github.com/jkcoxson/netmuxd/releases/download/v${NETMUXD_VERSION}/${ARCH}-linux-netmuxd" && \
+RUN wget -qO /opt/netmuxd "https://github.com/jkcoxson/netmuxd/releases/download/v${NETMUXD_VERSION}/$(cat ${ARCH_FILE})-linux-netmuxd" && \
     chmod +x /opt/netmuxd
 
 # AltServer-Linux install
 ##################
-RUN wget -qO /opt/AltServer "https://github.com/NyaMisty/AltServer-Linux/releases/download/v${ALTSERVER_VERSION}/AltServer-${ARCH}" && \
+RUN wget -qO /opt/AltServer "https://github.com/NyaMisty/AltServer-Linux/releases/download/v${ALTSERVER_VERSION}/AltServer-$(cat ${ARCH_FILE})" && \
     chmod +x /opt/AltServer
 
 RUN if [ "$BUILD_ENV" = "prod" ]; \
@@ -70,15 +73,8 @@ WORKDIR /app
 COPY ./package.json ./package-lock.json ./tsconfig.json ./eslint.config.json ./knip.config.jsonc /app/
 RUN npm install
 
-# When set to debug will include source maps and other debug options enabled
-ARG DEBUG 
-# if --build-arg DEBUG=1, set BUILD_ENV to 'debug' or set to null otherwise.
-ENV BUILD_ENV=${DEBUG:+debug}
-# if BUILD_ENV is null, set it to 'prod' (or leave as is otherwise).
-ENV BUILD_ENV=${BUILD_ENV:-prod}
-
 COPY ./src /app/src
-RUN npm run build:typescript:${BUILD_ENV}
+RUN npm run build:typescript
 
 # Start: /opt/anisette-server -p 6969 &
 # Start: usbmuxd &
@@ -88,4 +84,4 @@ RUN npm run build:typescript:${BUILD_ENV}
 # Select device, pair and install AltServer
 
 ENTRYPOINT ["npm", "run", "--silent"]
-CMD [ "execute:${BUILD_ENV}" ]
+CMD [ "execute" ]

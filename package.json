@@ -5,17 +5,17 @@
 	"type": "module",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/steilerdev/sidestore-manager.git"
+		"url": "git+https://github.com/steilerdev/altserver-manager.git"
 	},
 	"keywords": [
-		"sidestore"
+		"altserver"
 	],
 	"author": "steilerDev",
 	"license": "GPL-3.0-or-later",
 	"bugs": {
-		"url": "https://github.com/steilerdev/sidestore-manager/issues"
+		"url": "https://github.com/steilerdev/altserver-manager/issues"
 	},
-	"homepage": "https://github.com/steilerdev/sidestore-manager#readme",
+	"homepage": "https://github.com/steilerdev/altserver-manager#readme",
 	"engines": {
 		"node": ">=16"
 	},
@@ -26,14 +26,12 @@
 		"build:lint": "npx eslint -c eslint.config.json --fix --ext .ts ./src",
 		"build:knip": "npx knip --no-exit-code --config knip.config.jsonc",
 		"build": "npm run build:lint && npm run build:knip && npm run build:typescript",
-		"docker:build:prod": "docker build -t steilerdev/sidestore-manager:latest .",
-		"docker:build:debug": "docker build --build-arg='DEBUG=1' -t steilerdev/sidestore-manager:latest .",
-		"docker:build": "npm run docker:build:prod",
-		"docker:run:prod": "docker run --rm -it -v $(pwd)/data/adi:/data/adi -v $(pwd)/data/lockdown:/var/lib/lockdown -v /dev/bus/usb:/dev/bus/usb --network host --privileged steilerdev/sidestore-manager:latest execute:prod",
-		"docker:run:debug": "docker run --rm -it -e DEV=true -v $(pwd)/data/adi:/data/adi -v $(pwd)/data/lockdown:/var/lib/lockdown -v /dev/bus/usb:/dev/bus/usb --network host --privileged steilerdev/sidestore-manager:latest execute:debug",
+		"docker:build": "docker build -t steilerdev/altserver-manager:latest .",
+		"docker:run:prod": "docker run --rm -it -v $(pwd)/data/adi:/data/adi -v $(pwd)/data/lockdown:/var/lib/lockdown -v /dev/bus/usb:/dev/bus/usb --network host --privileged steilerdev/altserver-manager:latest execute:prod",
+		"docker:run:debug": "docker run --rm -it -e DEV=true -v $(pwd)/data/adi:/data/adi -v $(pwd)/data/lockdown:/var/lib/lockdown -v /dev/bus/usb:/dev/bus/usb --network host --privileged steilerdev/altserver-manager:latest execute:debug",
 		"docker:run": "npm run docker:run:prod",
-		"docker:prod": "npm run docker:build:prod && npm run docker:run:prod",
-		"docker:debug": "npm run docker:build:debug && npm run docker:run:debug",
+		"docker:prod": "npm run docker:build && npm run docker:run:prod",
+		"docker:debug": "npm run docker:build && npm run docker:run:debug",
 		"docker": "npm run docker:prod",
 		"execute:prod": "node dist/cli.js",
 		"execute:debug": "node --inspect-brk=0.0.0.0:9449 dist/cli.js",
