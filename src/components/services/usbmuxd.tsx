@@ -15,7 +15,7 @@ export default function USBMUXDService({service}: Props) {
         service.on(USBMUXDEvents.DEVICE_LIST_CHANGED, () => {
             Logger.info('Device list changed')
             setDeviceList(service.devices.map((device) =>
-                <UnorderedList.Item>
+                <UnorderedList.Item key={device.id}>
                         <Text>ID: {device.id}: {device.serial && `${device.serial}`}{device.address && `@${device.address}`}</Text>
                 </UnorderedList.Item>
             ))

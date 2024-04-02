@@ -23,7 +23,7 @@
 		"build:typescript:prod": "npx tsc",
 		"build:typescript:debug": "npx tsc --sourceMap",
 		"build:typescript": "npm run build:typescript:prod",
-		"build:lint": "npx eslint -c eslint.config.json --fix --ext .ts ./src",
+		"build:lint": "npx eslint -c eslint.config.json --fix --ext .ts .tsx ./src",
 		"build:knip": "npx knip --no-exit-code --config knip.config.jsonc",
 		"build": "npm run build:lint && npm run build:knip && npm run build:typescript",
 		"docker:build": "docker build -t steilerdev/altserver-manager:latest .",

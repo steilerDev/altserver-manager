@@ -39,3 +39,5 @@ docker run --rm -it -v $(pwd)/data/adi:/data/adi -v $(pwd)/data/lockdown:/var/li
 # Resources
 
 - [Setup Altserver Linux on Raspberry Pi with Wifi Refresh](https://gist.github.com/jschiefner/95a22d7f4803e7ad32a95b0f3aa655dc)
+- [Ultimate guide to troubleshooting AltServer on Linux](https://gist.github.com/burritosoftware/37fa2d02eca6408684d0dccabca91b09])
+- https://github.com/powenn/AltServer-Linux-PyScript
