@@ -3,6 +3,7 @@
         "altserver",
         "knip",
         "lockdown",
-        "steilerdev"
+        "steilerdev",
+        "usbmuxd"
     ]
 }

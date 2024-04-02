@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Text, Box, useFocus, Newline} from 'ink';
+import {Text, Box, useFocus, Newline, useInput} from 'ink';
 import { Select} from '@inkjs/ui';
 import { AltServerServices } from '../cli.js';
 import { Service, ServiceEvents} from '../lib/services.js';
@@ -10,7 +10,7 @@ import { BorderStyle, FocusColor, PrimaryColor, TabColors, serviceStatusToText} 
 import { Logger } from '../lib/log.js';
 
 let lastSelectedService: keyof AltServerServices | undefined = undefined
-let lastSelectedAction: 'restart' | 'stop' | 'start' | undefined = undefined
+let actionShouldTrigger: boolean = false
 
 export default function ServiceControl(altStoreServices: AltServerServices) {
     const {isFocused} = useFocus({id: FOCUS_ID.SERVICE});
@@ -37,17 +37,13 @@ export default function ServiceControl(altStoreServices: AltServerServices) {
         }
     }
 
-    const updateSelectedAction = async (action: 'restart' | 'stop' | 'start') => {
-        if(action === lastSelectedAction) {
-            Logger.debug(`Action ${action} already selected`)
-            return
-        }
-        lastSelectedAction = action
+    const performAction = async (action: 'restart' | 'stop' | 'start') => {
         if(!lastSelectedService) {
             Logger.error(`Unable to perform action ${action}, no service selected`)
             return
         }
-        await (altStoreServices[lastSelectedService] as Service)[lastSelectedAction]()
+        Logger.debug(`Performing action ${action} on ${lastSelectedService}`)
+        await (altStoreServices[lastSelectedService] as Service)[action]()
     }
 
     useEffect(() => {
@@ -56,6 +52,14 @@ export default function ServiceControl(altStoreServices: AltServerServices) {
             setUsbmuxdTab(getUsbmuxdTabContent())
         })
     }, [])
+
+    useInput((_input, key) => {
+        if(isFocused && key.return) {
+            actionShouldTrigger = true
+            return
+        }
+        actionShouldTrigger = false
+    })
 
 	return (
 		<Box flexGrow={1} flexDirection="column" borderStyle={BorderStyle} borderColor={isFocused ? FocusColor : PrimaryColor}>
@@ -92,8 +96,11 @@ export default function ServiceControl(altStoreServices: AltServerServices) {
                                         value: 'restart',
                                     },
                                 ]}
-                                onChange={async newAction => {
-                                    updateSelectedAction(newAction as 'start' | 'stop' | 'restart')
+                                onChange={async action => {
+                                    if(actionShouldTrigger) {
+                                        actionShouldTrigger = false
+                                        await performAction(action as 'start' | 'stop' | 'restart')
+                                    }
                                 }}
                                 isDisabled={!isFocused}
                             />

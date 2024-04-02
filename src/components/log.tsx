@@ -144,8 +144,8 @@ export default function Log(altStoreServices: AltServerServices) {
                                     showIndex={false}
                                     keyMap={{useTab: true}}
                                     isFocused={isFocused}
-                                    onChange={_newValue => {
-                                        refreshLogLines({_service: _newValue as keyof AltServerServices})
+                                    onChange={newService => {
+                                        refreshLogLines({_service: newService as keyof AltServerServices})
                                     }}
                                     defaultValue='appLogger'>
                                         <Tab name="appLogger">AltServer Manager</Tab>
